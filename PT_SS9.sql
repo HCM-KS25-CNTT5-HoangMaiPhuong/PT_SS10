@@ -1,54 +1,69 @@
-CREATE TABLE Pharmacy_Inventory (
-    Inventory_ID INT AUTO_INCREMENT PRIMARY KEY,
-    Drug_Name VARCHAR(255),
-    Batch_Number VARCHAR(50),
-    Expiry_Date DATE,
-    Quantity INT
+CREATE DATABASE IF NOT EXISTS hospital_pharmacy_db;
+
+USE hospital_pharmacy_db;
+
+DROP TABLE IF EXISTS pharmacy_inventory;
+
+CREATE TABLE pharmacy_inventory (
+    inventory_id int AUTO_INCREMENT PRIMARY KEY,
+    drug_name varchar(255) NOT NULL,
+    batch_number varchar(50) NOT NULL,
+    expiry_date date NOT NULL,
+    quantity int NOT NULL
 );
 
-
-
-INSERT INTO Pharmacy_Inventory
-(Drug_Name, Batch_Number, Expiry_Date, Quantity)
+-- Dữ liệu mẫu nhỏ để test nhanh
+INSERT INTO pharmacy_inventory (drug_name, batch_number, expiry_date, quantity)
 VALUES
-('Paracetamol', 'B001', '2026-12-31', 500),
-('Paracetamol', 'B002', '2025-10-15', 300),
-('Amoxicillin', 'A101', '2025-08-20', 200),
-('Vitamin C', 'V201', '2027-01-01', 700);
-
-
-
-CREATE INDEX idx_drug_name
-ON Pharmacy_Inventory(Drug_Name);
-
-CREATE INDEX idx_expiry_date
-ON Pharmacy_Inventory(Expiry_Date);
-
-
+    ('Paracetamol', 'BATCH001', '2026-01-10', 100),
+    ('Paracetamol', 'BATCH002', '2025-12-20', 50),
+    ('Paracetamol', 'BATCH003', '2027-03-15', 200),
+    ('Amoxicillin', 'BATCH004', '2025-11-01', 80),
+    ('Amoxicillin', 'BATCH005', '2026-08-12', 120),
+    ('Vitamin C', 'BATCH006', '2025-10-05', 300),
+    ('Vitamin C', 'BATCH007', '2026-04-25', 150);
 
 EXPLAIN
-SELECT *
-FROM Pharmacy_Inventory
-WHERE Drug_Name = 'Paracetamol'
-AND Expiry_Date < '2026-01-01';
+SELECT
+    *
+FROM
+    pharmacy_inventory
+WHERE
+    drug_name = 'Paracetamol'
+    AND expiry_date <= '2026-12-31'
+ORDER BY
+    expiry_date ASC;
 
+CREATE INDEX idx_drug_name ON pharmacy_inventory (drug_name);
 
-
-DROP INDEX idx_drug_name
-ON Pharmacy_Inventory;
-
-DROP INDEX idx_expiry_date
-ON Pharmacy_Inventory;
-
-
-
-CREATE INDEX idx_drug_expiry
-ON Pharmacy_Inventory(Drug_Name, Expiry_Date);
-
-
+CREATE INDEX idx_expiry_date ON pharmacy_inventory (expiry_date);
 
 EXPLAIN
-SELECT *
-FROM Pharmacy_Inventory
-WHERE Drug_Name = 'Paracetamol'
-AND Expiry_Date < '2026-01-01';
+SELECT
+    *
+FROM
+    pharmacy_inventory
+WHERE
+    drug_name = 'Paracetamol'
+    AND expiry_date <= '2026-12-31'
+ORDER BY
+    expiry_date ASC;
+
+DROP INDEX idx_drug_name ON pharmacy_inventory;
+
+DROP INDEX idx_expiry_date ON pharmacy_inventory;
+
+CREATE INDEX idx_drug_expiry ON pharmacy_inventory (drug_name, expiry_date);
+
+EXPLAIN
+SELECT
+    *
+FROM
+    pharmacy_inventory
+WHERE
+    drug_name = 'Paracetamol'
+    AND expiry_date <= '2026-12-31'
+ORDER BY
+    expiry_date ASC;
+
+
